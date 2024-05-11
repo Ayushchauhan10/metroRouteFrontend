@@ -7,7 +7,7 @@ import {useTypewriter,Cursor} from 'react-simple-typewriter';
 import { TbCornerRightDownDouble } from "react-icons/tb";
 
 function RouteFinder() {
-    const [path, setPath] = useState([]);
+    const [path, setPath] = useState(['No Route found']);
     const [interChanges, setinterChanges] = useState([]);
     const [totalTime, settotalTime] = useState(0);
 
