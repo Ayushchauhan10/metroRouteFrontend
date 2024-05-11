@@ -152,7 +152,7 @@ function RouteFinder() {
 
             </div>
 
-       {path.length>0 &&
+       {path!==null &&
         <div className='flex flex-col items-start justify-center  md:w-[70%] w-[95%] gap-3 '>
             <div className='font-bold text-[20px] text-blue-600'>
                 Your Route:
