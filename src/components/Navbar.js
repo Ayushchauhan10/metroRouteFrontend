@@ -5,7 +5,7 @@ const Navbar = () => {
     const [active, setActive] = useState(1)
   return (
     <div className='bg-blue-600 py-3 px-4  text-white font-mono tracking-tight flex flex-row items-center justify-center md:gap-20 gap-12 md:rounded-2xl md:mx-3 '>
-       <div className='flex flex-row items-center justify-center gap-2 text-yellow-500'>
+       <div className='flex flex-row items-center justify-center gap-2 text-white'>
             <div className=''>
                     <FaTrainSubway className='text-[30px]'/>
             </div>
