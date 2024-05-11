@@ -128,7 +128,7 @@ function RouteFinder() {
                     Number of Stations: 
                     </span>
                     <span className='text-blue-600 text-center'>
-                        {path.length>0 && path.length } 
+                        {path!==null && path.length } 
                     </span>
                     
                     </div>
