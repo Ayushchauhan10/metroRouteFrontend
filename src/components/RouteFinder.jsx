@@ -63,6 +63,8 @@ function RouteFinder() {
             ...prevFormData,
             endStation: value
         }));
+
+        setShowSuggestions2(0);
     };
 
       const handleDivClick1 = (value) => {
@@ -71,6 +73,7 @@ function RouteFinder() {
             ...prevFormData,
             startStation: value
         }));
+        setShowSuggestions1(0);
     };
 
       useEffect(() => {
