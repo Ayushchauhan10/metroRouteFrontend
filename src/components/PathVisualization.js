@@ -6,7 +6,9 @@ const PathVisualization = ({ station, key,type, color1, color2 }) => {
         redColor: '#FF0000',
         pinkColor: '#FFB6C1',
         greenColor: '#008000',
+        greenbranchColor: '#008000',
         blueColor: '#0096FF',
+        bluebranchColor:'#0096FF',
         greyColor: '#808080',
         orangeColor: '#FF7722',
         magentaColor: '#8b008b',
@@ -35,7 +37,7 @@ const PathVisualization = ({ station, key,type, color1, color2 }) => {
         }
 
         var cleanedName = color.replace("Color", "")+ ' Line';
-
+         cleanedName = cleanedName.replace(/branch(?:ed)?/gi, '').trim();
         return cleanedName.charAt(0).toUpperCase() + cleanedName.slice(1);
 
     };

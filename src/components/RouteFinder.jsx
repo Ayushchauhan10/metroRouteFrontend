@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import { MdOutlineLocationOn } from "react-icons/md";
 import { FaRegCircle } from "react-icons/fa";
 import PathVisualization from './PathVisualization';
@@ -11,6 +11,12 @@ function RouteFinder() {
     const [path, setPath] = useState([]);
     const [interChanges, setinterChanges] = useState([]);
     const [totalTime, settotalTime] = useState(0);
+    const [recommendations1, setRecommendations1] = useState([]);
+    const [recommendations2, setRecommendations2] = useState([]);
+    const [showSuggestions2, setShowSuggestions2] = useState(false);
+    const [showSuggestions1, setShowSuggestions1] = useState(false);
+    const suggestionsRef2 = useRef(null);
+    const suggestionsRef1 = useRef(null);
 
     const [text] = useTypewriter({
         words: ["Delhi Metro Route Finder ...","Delhi Metro Map ..."],
@@ -19,6 +25,7 @@ function RouteFinder() {
         deleteSpeed: 10,
         delaySpeed: 2000,
       });
+
      const [formData, setFormData] = useState({
         startStation: '',
         endStation: ''
@@ -26,14 +33,15 @@ function RouteFinder() {
     
       const handleSubmit = async (event) => {
         event.preventDefault(); 
-        formData.startStation =formData.startStation.toLowerCase();
-        formData.endStation = formData.endStation.toLowerCase();
+        formData.startStation =formData?.startStation?.trim().toLowerCase();
+        formData.endStation = formData?.endStation?.trim().toLowerCase();
+        
+        
         if(!formData?.startStation || !formData?.endStation)
         {
             return;
         }
 
-        console.log('Form data:', formData);
 
         // const response = await fetch('http://localhost:8000/api/v1/', {
         const response = await fetch('https://metroroutebackend.onrender.com/api/v1/', {
@@ -45,24 +53,118 @@ function RouteFinder() {
                 });
          
         const data = await response.json();
-        console.log(data);
         setPath(data.finalPath);
         settotalTime(data.totalTime);
         setinterChanges(data.interChanges);
-        
-        
-        
       };
+     
+      const handleDivClick2 = (value) => {
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            endStation: value
+        }));
+    };
+
+      const handleDivClick1 = (value) => {
+        // console.log(value)
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            startStation: value
+        }));
+    };
+
+      useEffect(() => {
+        const handleOutsideClick2 = (event) => {
+            if (suggestionsRef2.current && !suggestionsRef2.current.contains(event.target)) {
+                setShowSuggestions2(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick2);
+
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick2);
+        };
+    }, [recommendations2]);
+
+      useEffect(() => {
+     
+        const handleOutsideClick1 = (event) => {
+            if (suggestionsRef1.current && !suggestionsRef1.current.contains(event.target)) {
+                setShowSuggestions1(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick1);
+
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick1);
+        };
+    }, [recommendations1]);
     
-      const handleChange = (event) => {
+      const handleChange = async (event) => {
         const { name, value } = event.target;
+
         setFormData({
-          ...formData,
-          [name]: value,
+            ...formData,
+            [name]: value,
         });
+        
+        if(name==='startStation'){
+            try {
+            const lowerCaseValue=value.trim().toLowerCase();
+                if(lowerCaseValue===''){
+                    setRecommendations1([]);
+                return;
+                }
+
+                const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend1', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                    "stationName":lowerCaseValue
+                    })
+                });
+                const data = await response.json();
+                // console.log(data);
+                setRecommendations1(data.recommendations1);
+
+            } catch (error) {
+                console.error('Error calling API:', error);
+            }
+        }
+        else{
+
+            try {
+                const lowerCaseValue=value.trim().toLowerCase();
+                    if(lowerCaseValue===''){
+                    setRecommendations2([]);
+                    return;
+                    }
+    
+                    const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend2', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                        "stationName":lowerCaseValue
+                        })
+                    });
+                    const data = await response.json();
+                    // console.log("recommendations2",data.recommendations2);
+                    setRecommendations2(data.recommendations2);
+    
+    
+                } catch (error) {
+                    console.error('Error calling API:', error);
+                }
+
+        }
       };
-
-
+      
     return (
         <div className='w-full flex flex-col gap-10 items-center justify-center '>
          
@@ -77,9 +179,9 @@ function RouteFinder() {
             </div>
 
             <form onSubmit={handleSubmit} className=' flex bg-blue-600 flex-col items-center justify-center md:w-[70%] w-[95%] cursor-pointer rounded-3xl md:py-3 py-2'>
-                <div className='flex flex-row items-center  justify-center p-4 py-5 gap-3 md:w-[70%]'>
+                <div className='flex flex-row items-center justify-center p-4 py-5 gap-3 md:w-[70%]'>
                   
-                    <div className='flex flex-col items-center justify-center gap-2 mt-2 animate-pulse'>
+                    <div className='flex flex-col items-center justify-center gap-2  animate-pulse'>
                         <FaRegCircle className='text-[15px] text-white'/>
                         
                         <div className='flex flex-col gap-1 items-start justify-start'>
@@ -90,22 +192,78 @@ function RouteFinder() {
                         <MdOutlineLocationOn  className='text-[25px] text-white font-bold'/>
                     </div>
                    
-                   <div className=' w-full flex flex-col items-center justify-center gap-5 text-blue-600'>
+                   <div className=' w-full relative flex flex-col items-center justify-center gap-5 text-blue-600'>
 
-                      <input type="search" 
-                             name="startStation" value={formData.startStation || ''} 
-                             onChange={handleChange} placeholder="Enter Start Station"
-                             className='p-2 px-4 rounded-2xl font-medium w-[100%] cursor-pointer outline:none'
-                       />
+                    <div className='w-[100%]'>
+                      
+                            <input type="search" 
+                                    name="startStation" value={formData.startStation || ''} 
+                                    onFocus={() => setShowSuggestions1(true)}
+                                    onChange={handleChange} placeholder="Enter Start Station"
+                                    autoComplete="off"
+                                    className='p-2 px-4 rounded-2xl font-medium w-[100%] cursor-pointer outline:none'
+                            />
 
-                    <input type="search" 
-                           name="endStation" value={formData.endStation || ''} 
-                           onChange={handleChange} placeholder="Enter endStation"
-                           className='p-2 px-4 rounded-2xl font-medium w-[100%] cursor-pointer '
-                     />
+{showSuggestions1 && formData.startStation && (
+                                <div 
+                                    ref={suggestionsRef1}
+                                    className='w-[100%] top-10 py-1 px-4 backdrop-blur-md bg-white/45 absolute rounded-lg'
+                                >
+                                    {recommendations1.map((item, index) => (
+                                        <div 
+                                            key={index} 
+                                            onClick={() => handleDivClick1(item)}
+                                            className={`border-${index === 0 ? '' : 't-2'} py-2 text-blue-600 border-blue-500 border-dashed left-4 mt-1 z-100`}
+                                        >
+                                            {item.charAt(0).toUpperCase() + item.slice(1)}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            
+
+                    </div> 
+
+
+           
+
+                <div className='w-[100%]'>
+                            <input 
+                                autoComplete="off"
+                                type="search" 
+                                name="endStation" 
+                                value={formData.endStation || ''} 
+                                onChange={handleChange} 
+                                placeholder="Enter endStation"
+                                className='p-2 px-4 rounded-2xl font-medium w-[100%] cursor-pointer'
+                                onFocus={() => setShowSuggestions2(true)} 
+                            />
+
+                            {showSuggestions2 && formData.endStation && (
+                                <div 
+                                    ref={suggestionsRef2}
+                                    className='w-[100%] top-30 py-1 px-4 backdrop-blur-md bg-white/45 absolute rounded-lg'
+                                >
+                                    {recommendations2.map((item, index) => (
+                                        <div 
+                                            key={index} 
+                                            onClick={() => handleDivClick2(item)}
+                                            className={`border-${index === 0 ? '' : 't-2'} py-2 text-blue-600 border-blue-500 border-dashed left-4 mt-1 z-100`}
+                                        >
+                                            {item.charAt(0).toUpperCase() + item.slice(1)}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                </div>
+
+                   
 
                    </div>
+
                 </div>
+                
 
                 <button type="submit" className='bg-white text-blue-600 px-4 py-2 font-extrabold rounded-full hover:bg-slate-200'>Find Route</button>
             </form>
@@ -187,13 +345,38 @@ function RouteFinder() {
         
         </div>   
 
-
-
-
-
         </div>
     );
 }
 
 export default RouteFinder;
 
+
+
+
+
+         /* <div className='w-[100%] '
+              >
+                        <input type="search" 
+                                name="endStation" value={formData.endStation || ''} 
+                                onFocus={() => {
+                                    setfocus2('1');
+            
+                                }}
+                                onBlur={() => {
+                                    setfocus2('0'); 
+                                }}
+                                onChange={handleChange} placeholder="Enter endStation"
+                                className='p-2 px-4 rounded-2xl font-medium w-[100%] cursor-pointer '
+                        />
+                         {recommendations2?.length>0 && focus2!=='0' && <div className='w-[100%] top-30 py-1 px-4 backdrop-blur-md bg-white/45 absolute rounded-lg'>
+                                 {recommendations2?.map((item, index) => 
+                                    <div key={index} 
+                                    onClick={() => handleDivClick(item)}
+                                         className={`border-${index === 0 ? '' : 't-2'} py-2 text-blue-600 border-blue-500 border-dashed left-4  mt-1 z-100`}>
+                                        {item.charAt(0).toUpperCase() + item.slice(1) }
+                                    </div>
+                                    
+                                  )}
+                            </div>}
+                    </div> */
