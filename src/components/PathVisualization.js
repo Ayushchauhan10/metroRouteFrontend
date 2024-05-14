@@ -5,6 +5,7 @@ const PathVisualization = ({ station, key,type, color1, color2 }) => {
         yellowColor: '#FDDA0D',
         redColor: '#FF0000',
         pinkColor: '#FFB6C1',
+        pinkbranchColor: '#FFB6C1',
         greenColor: '#008000',
         greenbranchColor: '#008000',
         blueColor: '#0096FF',
