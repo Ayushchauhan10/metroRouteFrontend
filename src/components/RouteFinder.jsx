@@ -43,8 +43,8 @@ function RouteFinder() {
         }
 
 
-        // const response = await fetch('http://localhost:8000/api/v1/', {
-        const response = await fetch('https://metroroutebackend.onrender.com/api/v1/', {
+        const response = await fetch('http://localhost:8000/api/v1/', {
+        // const response = await fetch('https://metroroutebackend.onrender.com/api/v1/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -52,10 +52,10 @@ function RouteFinder() {
                     body: JSON.stringify(formData)
                 });
          
-        const data = await response.json();
-        setPath(data.finalPath);
-        settotalTime(data.totalTime);
-        setinterChanges(data.interChanges);
+            const data = await response.json();
+            setPath(data.finalPath);
+            settotalTime(data.totalTime);
+            setinterChanges(data.interChanges);
       };
      
       const handleDivClick2 = (value) => {
@@ -118,11 +118,10 @@ function RouteFinder() {
             const lowerCaseValue=value.trim().toLowerCase();
                 if(lowerCaseValue===''){
                     setRecommendations1([]);
-                return;
+                    return;
                 }
-
-                // const response = await fetch('http://localhost:8000/api/v1/recommend1', {
-                const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend1', {
+                const response = await fetch('http://localhost:8000/api/v1/recommend1', {
+                // const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend1', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -147,8 +146,8 @@ function RouteFinder() {
                     setRecommendations2([]);
                     return;
                     }
-                    // const response = await fetch('http://localhost:8000/api/v1/recommend2', {
-                    const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend2', {
+                    const response = await fetch('http://localhost:8000/api/v1/recommend2', {
+                    // const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend2', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -208,11 +207,10 @@ function RouteFinder() {
                                     className='p-2 px-4 rounded-2xl font-medium w-[100%] cursor-pointer outline:none'
                             />
 
-{showSuggestions1 && formData.startStation && (
+                            {showSuggestions1 && formData.startStation && recommendations1.length>0 && (
                                 <div 
                                     ref={suggestionsRef1}
-                                    className='w-[100%] top-10 py-1 px-4 backdrop-blur-md bg-white/45 absolute rounded-lg'
-                                >
+                                    className='w-[100%] top-10 py-1 px-4 backdrop-blur-md bg-white/45 absolute rounded-lg'>
                                     {recommendations1.map((item, index) => (
                                         <div 
                                             key={index} 
@@ -244,7 +242,7 @@ function RouteFinder() {
                                 onFocus={() => setShowSuggestions2(true)} 
                             />
 
-                            {showSuggestions2 && formData.endStation && (
+{showSuggestions2 && formData.endStation && recommendations2.length>0 && (
                                 <div 
                                     ref={suggestionsRef2}
                                     className='w-[100%] top-30 py-1 px-4 backdrop-blur-md bg-white/45 absolute rounded-lg'
