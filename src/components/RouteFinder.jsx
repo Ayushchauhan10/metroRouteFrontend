@@ -43,8 +43,8 @@ function RouteFinder() {
         }
 
 
-        const response = await fetch('http://localhost:8000/api/v1/', {
-        // const response = await fetch('https://metroroutebackend.onrender.com/api/v1/', {
+        // const response = await fetch('http://localhost:8000/api/v1/', {
+        const response = await fetch('https://metroroutebackend.onrender.com/api/v1/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -120,8 +120,8 @@ function RouteFinder() {
                     setRecommendations1([]);
                     return;
                 }
-                const response = await fetch('http://localhost:8000/api/v1/recommend1', {
-                // const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend1', {
+                // const response = await fetch('http://localhost:8000/api/v1/recommend1', {
+                const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend1', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -146,8 +146,8 @@ function RouteFinder() {
                     setRecommendations2([]);
                     return;
                     }
-                    const response = await fetch('http://localhost:8000/api/v1/recommend2', {
-                    // const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend2', {
+                    // const response = await fetch('http://localhost:8000/api/v1/recommend2', {
+                    const response = await fetch('https://metroroutebackend.onrender.com/api/v1/recommend2', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
